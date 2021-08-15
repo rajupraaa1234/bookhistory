@@ -114,7 +114,7 @@ class _InsertBookScreenState extends State<InsertBookScreen> {
       } else {
         _bookDao.updateBook(book);
       }
-      Navigator.pop(context);
+      Navigator.pop(context,'yes');
     } catch(err) {
       print(err.toString());
       showDialog(

@@ -57,8 +57,7 @@ class _BookListScreenState extends State<BookListScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context)  {
     return Scaffold(
       appBar: AppBar(
         title: customSearchBar,
@@ -114,11 +113,21 @@ class _BookListScreenState extends State<BookListScreen> {
           }
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            //isSearching = false;
+          final result = await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => InsertBookScreen())
             );
+            if(result!=null){
+              String str = result.toString();
+              if(str=="yes"){
+                print('adding      $str');
+                _setBookList();
+              }
+            }else{
+              print('Null from intent');
+            }
           },
           child: Icon(Icons.add)
       ),
@@ -126,13 +135,15 @@ class _BookListScreenState extends State<BookListScreen> {
   }
 
   Widget _rowContent(Book book) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
+    return
+        Card(
+      margin: const EdgeInsets.all(10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Book Name:   "+book.name),
@@ -141,10 +152,13 @@ class _BookListScreenState extends State<BookListScreen> {
             ],
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ElevatedButton(
                 onPressed: (){
+                  //isSearching = false;
                   _deleteBook(book.id);
+                  _setBookList();
                 },
                 child: Icon(Icons.delete),
                 style: ElevatedButton.styleFrom(
@@ -153,9 +167,19 @@ class _BookListScreenState extends State<BookListScreen> {
                 ),
               ),
               TextButton(
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => InsertBookScreen(), settings: RouteSettings(arguments: book) )
+                onPressed: () async {
+                 // isSearching = false;
+                  final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => InsertBookScreen(), settings: RouteSettings(arguments: book) )
                   );
+                  if(result!=null){
+                    String str = result.toString();
+                    if(str=="yes"){
+                      print('update      $str');
+                      _setBookList();
+                    }
+                  }else{
+                    print('Null from intent');
+                  }
                 },
                 child: Text("Update"), style: TextButton.styleFrom(
                   primary: Colors.green
@@ -167,6 +191,7 @@ class _BookListScreenState extends State<BookListScreen> {
         ],
       ),
     );
+
   }
 
   Widget _showHeader() {
